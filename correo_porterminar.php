@@ -3,9 +3,10 @@
 	session_start();
 	require 'Classes/PHPExcel.php';
 	require 'conexion.php';
-  require 'funcs/funcs.php';
-  require 'PHPMailer/PHPMailerAutoload.php';
-   	
+   	require 'funcs/funcs.php';
+   	require 'PHPMailer/PHPMailerAutoload.php';
+   	setlocale(LC_TIME, 'es_ES.UTF-8');
+      	
 	//Consulta
 	$sql = "SELECT vigente, id, nombre, marca, modelo, serie, proveedor, convenio, fechainicio, fechatermino, licitacion, contrato, oc FROM contratos";
 	$resultado = $mysqli->query($sql);
@@ -15,9 +16,12 @@
 	$objPHPExcel  = new PHPExcel(); 
 	//$now = date("d-m-Y (H:i:s)", (strtotime ("-4 Hours")));
 	
+	$now1 = strftime("%A %e de %B del %Y");
+	$tresmeses1 = strftime("%A %e de %B del %Y", (strtotime ("+3 Month")));
 	$now = date("d-m-Y");
     $tresmeses = date("d-m-Y", (strtotime ("+3 Month")));
     $i = 0;
+    
 	//Propiedades de Documento
 	$objPHPExcel->getProperties()->setCreator("Cristopher Diaz")->setDescription("Reporte de Contratos");
 	
@@ -69,12 +73,12 @@
     	    
     	        $nombre = $row2['nombre'];
         	    $email = $row2['correo'];
-        	    echo $nombre.$email."<br>";
+        	    echo $nombre.$email.$now1."<br>";
         	    
         	    $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
-            	$objWriter->save('Files/Excel - Por Terminar/ReporteContratosPorterminar'.date(DATE_RFC2822).'.xlsx');
+            	$objWriter->save('Files/Excel - Por Terminar/ReporteContratosPorterminar'.$now.'.xlsx');
     	
-        		$mail = new PHPMailer();
+        	   	$mail = new PHPMailer();
         		$mail->isSMTP();
         		$mail->SMTPAuth = true;
         		$mail->SMTPSecure = 'ssl';
@@ -87,21 +91,18 @@
         		$mail->setFrom('emgestio@emgestionhgf.com', 'Gestion de Contratos');
         		$mail->addAddress($email, $nombre);
         		
-        		$mail->Subject = $nombre;
-        		$mail->Body    = "Estimado(a) ".$nombre."<br><br>Se entrega el registro de los equipos asociados a contratos por terminar entre hoy ".date(DATE_RFC2822)." y el ".$tresmeses;
-        		$mail->AddAttachment('Files/Excel - Por Terminar/ReporteContratosPorterminar'.date('d-m-Y').'.xlsx', 'ReporteContratosPorterminar '.date(DATE_RFC2822).'.xlsx');
+        		$mail->Subject = "Contrato por Terminar dentro de los proximos meses";
+        		$mail->Body    = "Estimado(a) ".$nombre."<br><br>Se entrega el registro de los equipos asociados a contratos POR TERMINAR entre hoy ".$now1." y el ".$tresmeses1;
+        		$mail->AddAttachment('Files/Excel - Por Terminar/ReporteContratosPorterminar'.$now.'.xlsx', 'ReporteContratosPorterminar '.$now.'.xlsx');
         		$mail->IsHTML(true);
         		
         		if($mail->send()){
-        		unlink('Files/Excel - Por Terminar/ReporteContratosPorterminar'.date(DATE_RFC2822).'.xlsx');
+        		unlink('Files/Excel - Por Terminar/ReporteContratosPorterminar'.$now.'.xlsx');
         		return true;
         		} else {
         		return false;
             	}
-        	    
-        	    
-    	        
-    	}
+    	  }
     }
     
     
