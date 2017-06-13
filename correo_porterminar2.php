@@ -5,8 +5,9 @@
 	require 'conexion.php';
    	require 'funcs/funcs.php';
    	require 'PHPMailer/PHPMailerAutoload.php';
-   	
-	//Consulta
+   	setlocale(LC_TIME, 'es_ES.UTF-8');
+   
+    //Consulta
 	$sql = "SELECT vigente, id, nombre, marca, modelo, serie, proveedor, convenio, fechainicio, fechatermino, licitacion, contrato, oc FROM contratos";
 	$resultado = $mysqli->query($sql);
 	$fila = 2; //Establecemos en que fila inciara a imprimir los datos
@@ -15,9 +16,12 @@
 	$objPHPExcel  = new PHPExcel(); 
 	//$now = date("d-m-Y (H:i:s)", (strtotime ("-4 Hours")));
 	
+	$now1 = strftime("%A %e de %B del %Y");
+	$tresmeses1 = strftime("%A %e de %B del %Y", (strtotime ("+3 Month")));
 	$now = date("d-m-Y");
     $tresmeses = date("d-m-Y", (strtotime ("+3 Month")));
     $i = 0;
+    
 	//Propiedades de Documento
 	$objPHPExcel->getProperties()->setCreator("Cristopher Diaz")->setDescription("Reporte de Contratos");
 	
@@ -66,12 +70,10 @@
     	$result2 = $mysqli->query($sql);
     	
     	while($row2 = $result2->fetch_array(MYSQLI_ASSOC)){
-    	    
+    	      
     	        $nombre = $row2['nombre'];
-        	    $email = $row2['correo'];
-        	    echo $nombre." ".$email."<br>";
-        	    
-        	    
+        	$email = $row2['correo'];
+        	echo $nombre." ".$email."<br>";       	    
     	        
     	}
     }
