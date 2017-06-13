@@ -71,12 +71,12 @@
     	
     	while($row2 = $result2->fetch_array(MYSQLI_ASSOC)){
     	    
-    	        $nombre = $row2['nombre'];
+    	           $nombre = $row2['nombre'];
         	    $email = $row2['correo'];
-        	    echo $nombre.$email.$now1."<br>";
+        	    echo $nombre.$email."<br>";
         	    
-        	    $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
-            	$objWriter->save('Files/Excel - Por Terminar/ReporteContratosPorterminar'.$now.'.xlsx');
+        	       $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
+            		$objWriter->save('Files/Excel - Por Terminar/ReporteContratosPorterminar'.$now.'.xlsx');
     	
         	   	$mail = new PHPMailer();
         		$mail->isSMTP();
